@@ -1,0 +1,408 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>📋 Histórico Completo</h1>
+    <p style="color: #7f8c8d;">Total de movimentações: <strong style="color: #2c3e50;">{{ movimentacoes|length }}</strong></p>
+</div>
+
+<!-- FILTROS -->
+<div class="filtros-box">
+    <form method="GET" class="form-filtros">
+        <div class="campo-filtro">
+            <label><i class="fas fa-tag"></i> Tipo</label>
+            <select name="tipo">
+                <option value="">Todos</option>
+                {% for t in tipos %}
+                <option value="{{ t }}" {% if filtro_tipo == t %}selected{% endif %}>
+                    {{ t }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="campo-filtro">
+            <label><i class="fas fa-layer-group"></i> Categoria</label>
+            <select name="categoria">
+                <option value="">Todas</option>
+                {% for c in categorias %}
+                <option value="{{ c }}" {% if filtro_categoria == c %}selected{% endif %}>
+                    {{ c }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="acoes-filtro">
+            <button type="submit" class="btn-filtrar">🔍 Filtrar</button>
+            <a href="/historico" class="btn-limpar">Limpar</a>
+        </div>
+    </form>
+</div>
+
+<!-- TABELA -->
+<div class="tabela-box">
+    <div style="overflow-x: auto;">
+        <table class="tabela-historico">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Categoria</th>
+                    <th>Sexo</th>
+                    <th style="text-align: center;">Quantidade</th>
+                    <th>Data</th>
+                    <th>Usuário</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in movimentacoes %}
+                <tr>
+                    <td>
+                        {% if m[0] == "Compra" %}🟢
+                        {% elif m[0] == "Venda" %}🔴
+                        {% elif m[0] == "Nascimento" %}🐣
+                        {% elif m[0] == "Morte" %}💀
+                        {% elif m[0] == "Abate" %}🔪
+                        {% endif %}
+                        {{ m[0] }}
+                    </td>
+                    <td>{{ m[1] }}</td>
+                    <td>
+                        {% if m[2] == "Macho" %}♂️
+                        {% elif m[2] == "Fêmea" %}♀️
+                        {% else %}-
+                        {% endif %}
+                        {{ m[2] if m[2] else '' }}
+                    </td>
+                    <td style="text-align: center; font-weight: 700; color: #2c3e50;">{{ m[3] }}</td>
+                    <td>{{ m[4] }}</td>
+                    <td>
+                        {% if m[5] %}
+                            <span style="background: #ecf0f1; padding: 2px 10px; border-radius: 12px; font-size: 13px;">{{ m[5] }}</span>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: #95a5a6; padding: 30px 0;">
+                        Nenhuma movimentação encontrada
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- BOTÕES -->
+<div class="botoes-historico">
+    <a href="/" class="btn-acao btn-dash">🏠 Voltar ao Dashboard</a>
+    <a href="/movimentacao" class="btn-acao btn-novo">➕ Nova Movimentação</a>
+    <a href="/exportar/csv{% if filtro_tipo %}?tipo={{ filtro_tipo }}{% endif %}{% if filtro_categoria %}&categoria={{ filtro_categoria }}{% endif %}" class="btn-acao btn-csv">
+        📥 Exportar CSV
+    </a>
+    <a href="/exportar/pdf{% if filtro_tipo %}?tipo={{ filtro_tipo }}{% endif %}{% if filtro_categoria %}&categoria={{ filtro_categoria }}{% endif %}" class="btn-acao btn-pdf">
+        📄 Exportar PDF
+    </a>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: white;
+        padding: 20px 25px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .page-header h1 {
+        margin: 0 0 5px 0;
+        color: #2c3e50;
+        font-size: 26px;
+    }
+
+    .page-header p {
+        margin: 0;
+        font-size: 15px;
+        color: #7f8c8d;
+    }
+
+    /* FILTROS */
+    .filtros-box {
+        background: white;
+        padding: 20px 25px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .form-filtros {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 15px 20px;
+    }
+
+    .campo-filtro {
+        flex: 1;
+        min-width: 140px;
+    }
+
+    .campo-filtro label {
+        display: block;
+        font-weight: 600;
+        font-size: 13px;
+        color: #34495e;
+        margin-bottom: 4px;
+    }
+
+    .campo-filtro label i {
+        margin-right: 4px;
+        color: #3498db;
+    }
+
+    .campo-filtro select {
+        width: 100%;
+        padding: 10px 14px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        background: white;
+        transition: border-color 0.3s ease;
+        appearance: auto;
+    }
+
+    .campo-filtro select:focus {
+        border-color: #3498db;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+
+    .acoes-filtro {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        min-width: 160px;
+    }
+
+    .btn-filtrar {
+        padding: 10px 24px;
+        background: linear-gradient(135deg, #2c3e50, #3498db);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-filtrar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+    }
+
+    .btn-limpar {
+        padding: 10px 20px;
+        background: #ecf0f1;
+        color: #7f8c8d;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-limpar:hover {
+        background: #d5d8dc;
+        color: #2c3e50;
+        text-decoration: none;
+    }
+
+    /* TABELA */
+    .tabela-box {
+        background: white;
+        border-radius: 16px;
+        padding: 5px 0 5px 0;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        overflow: hidden;
+        margin-bottom: 25px;
+    }
+
+    .tabela-historico {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    .tabela-historico th {
+        background: #2c3e50;
+        color: white;
+        padding: 14px 16px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .tabela-historico td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #f0f2f5;
+        vertical-align: middle;
+    }
+
+    .tabela-historico tr:hover {
+        background: #f8f9fa;
+    }
+
+    .tabela-historico tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* BOTÕES */
+    .botoes-historico {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .btn-acao {
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        text-align: center;
+        min-width: 140px;
+    }
+
+    .btn-acao:hover {
+        transform: translateY(-2px);
+        text-decoration: none;
+        color: white;
+    }
+
+    .btn-dash {
+        background: #2c3e50;
+        color: white;
+    }
+
+    .btn-dash:hover {
+        background: #1a252f;
+        color: white;
+    }
+
+    .btn-novo {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: white;
+    }
+
+    .btn-novo:hover {
+        box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+        color: white;
+    }
+
+    .btn-csv {
+        background: #f39c12;
+        color: white;
+    }
+
+    .btn-csv:hover {
+        box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        color: white;
+    }
+
+    .btn-pdf {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .btn-pdf:hover {
+        box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        color: white;
+    }
+
+    /* RESPONSIVIDADE */
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 22px;
+        }
+
+        .form-filtros {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .campo-filtro {
+            width: 100%;
+            min-width: unset;
+        }
+
+        .acoes-filtro {
+            width: 100%;
+            justify-content: stretch;
+        }
+
+        .btn-filtrar, .btn-limpar {
+            flex: 1;
+            text-align: center;
+        }
+
+        .tabela-historico {
+            font-size: 12px;
+        }
+
+        .tabela-historico th,
+        .tabela-historico td {
+            padding: 8px 10px;
+        }
+
+        .botoes-historico {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-acao {
+            min-width: unset;
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .tabela-historico {
+            font-size: 11px;
+        }
+
+        .tabela-historico th,
+        .tabela-historico td {
+            padding: 6px 8px;
+        }
+
+        .page-header h1 {
+            font-size: 18px;
+        }
+
+        .btn-acao {
+            font-size: 13px;
+            padding: 10px 16px;
+        }
+    }
+</style>
+{% endblock %}
