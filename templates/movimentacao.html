@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card-dashboard" style="max-width: 600px; margin: 0 auto;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <span style="font-size: 48px;">➕</span>
+        <h2 style="margin: 10px 0 5px 0; color: #2c3e50;">Nova Movimentação</h2>
+        <p style="color: #7f8c8d; font-size: 14px;">Registre uma nova movimentação do rebanho</p>
+    </div>
+
+    <form method="POST" style="background: #f8f9fa; padding: 25px; border-radius: 12px;">
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; color: #34495e; margin-bottom: 6px; font-size: 14px;">
+                <span style="color: #e74c3c;">*</span> Tipo de Movimentação:
+            </label>
+            <select name="tipo" style="width: 100%; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; background: white; transition: border-color 0.3s ease;" required>
+                <option value="Nascimento">🐣 Nascimento</option>
+                <option value="Compra">🟢 Compra</option>
+                <option value="Venda">🔴 Venda</option>
+                <option value="Morte">💀 Morte</option>
+                <option value="Abate">🔪 Abate</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; color: #34495e; margin-bottom: 6px; font-size: 14px;">
+                <span style="color: #e74c3c;">*</span> Categoria:
+            </label>
+            <select name="categoria" style="width: 100%; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; background: white; transition: border-color 0.3s ease;" required>
+                {% for c in categorias %}
+                    <option value="{{ c }}">{{ c }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; color: #34495e; margin-bottom: 6px; font-size: 14px;">Sexo:</label>
+            <select name="sexo" style="width: 100%; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; background: white; transition: border-color 0.3s ease;">
+                <option value="">Não se aplica</option>
+                <option value="Macho">♂️ Macho</option>
+                <option value="Fêmea">♀️ Fêmea</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+            <label style="display: block; font-weight: 600; color: #34495e; margin-bottom: 6px; font-size: 14px;">
+                <span style="color: #e74c3c;">*</span> Quantidade:
+            </label>
+            <input type="number" name="quantidade" min="1" style="width: 100%; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease;" required>
+        </div>
+
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button type="submit" style="flex: 1; min-width: 150px; padding: 14px; background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                ✅ Salvar Movimentação
+            </button>
+            <a href="/" style="flex: 1; min-width: 120px; padding: 14px; background: #ecf0f1; color: #7f8c8d; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-align: center; text-decoration: none;">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card-dashboard {
+        background: white;
+        border-radius: 16px;
+        padding: 35px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        margin: 20px auto;
+    }
+
+    select:focus, input:focus {
+        border-color: #3498db !important;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+
+    button[type="submit"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+    }
+
+    .btn-secondary:hover {
+        background: #d5d8dc !important;
+        color: #2c3e50 !important;
+        text-decoration: none !important;
+    }
+
+    @media (max-width: 600px) {
+        .card-dashboard {
+            padding: 20px 15px;
+        }
+
+        select, input {
+            font-size: 16px !important;
+            padding: 10px 14px !important;
+        }
+
+        button[type="submit"], a {
+            font-size: 14px !important;
+            padding: 12px !important;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
