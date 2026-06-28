@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card-dashboard">
+            <h2>📊 Relatórios</h2>
+            <p>Total de movimentações registradas: <strong>{{ total_movimentacoes }}</strong></p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card-dashboard">
+            <h3>📈 Distribuição por Categoria</h3>
+            {% for c in categorias %}
+            <div class="categoria">
+                <span>{{ c[0] }}</span>
+                <strong>{{ c[1] }}</strong>
+            </div>
+            {% endfor %}
+            <div class="categoria" style="font-weight: bold; border-top: 2px solid #2E7D32; padding-top: 10px; margin-top: 5px;">
+                <span>TOTAL</span>
+                <strong>{{ categorias|sum(attribute=1) }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card-dashboard">
+            <h3>🔄 Movimentações por Tipo</h3>
+            {% for m in movimentacoes_por_tipo %}
+            <div class="categoria">
+                <span>
+                    {% if m[0] == "Compra" %}🟢
+                    {% elif m[0] == "Venda" %}🔴
+                    {% elif m[0] == "Nascimento" %}🐣
+                    {% elif m[0] == "Morte" %}💀
+                    {% elif m[0] == "Abate" %}🔪
+                    {% endif %}
+                    {{ m[0] }}
+                </span>
+                <strong>{{ m[1] }}</strong>
+            </div>
+            {% else %}
+            <p class="text-center">Nenhuma movimentação registrada</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card-dashboard">
+            <h3>📊 Resumo do Rebanho</h3>
+            <p>Total de animais: <strong>{{ categorias|sum(attribute=1) }}</strong></p>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-dashboard">
+            <h3>🧬 Movimentações por Sexo</h3>
+            {% for s in movimentacoes_por_sexo %}
+            <div class="categoria">
+                <span>
+                    {% if s[0] == "Macho" %}♂️
+                    {% elif s[0] == "Fêmea" %}♀️
+                    {% endif %}
+                    {{ s[0] }}
+                </span>
+                <strong>{{ s[1] }}</strong>
+            </div>
+            {% else %}
+            <p class="text-center">Nenhuma movimentação com sexo registrado</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card-dashboard">
+            <h3>👥 Relatório de Acesso dos Usuários</h3>
+            <p>Últimos acessos e atividades registradas no sistema</p>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Usuário</th>
+                        <th>Ação</th>
+                        <th>IP</th>
+                        <th>Data/Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs_acesso %}
+                    <tr>
+                        <td>
+                            <strong>{{ log[0] }}</strong>
+                            {% if log[0] == 'admin' %}
+                                <span class="badge" style="background: #D32F2F; font-size: 10px;">Admin</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if 'Login' in log[1] %}
+                                🟢 {{ log[1] }}
+                            {% elif 'Logout' in log[1] %}
+                                🔴 {{ log[1] }}
+                            {% elif 'Movimentação' in log[1] %}
+                                📝 {{ log[1] }}
+                            {% elif 'adicionou' in log[1] or 'removeu' in log[1] or 'alterou' in log[1] %}
+                                👥 {{ log[1] }}
+                            {% else %}
+                                {{ log[1] }}
+                            {% endif %}
+                        </td>
+                        <td>{{ log[2] }}</td>
+                        <td>{{ log[3] }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center">Nenhum log de acesso registrado</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card-dashboard text-center">
+            <div class="d-flex gap-2 justify-content-center flex-wrap">
+                <a href="/">
+                    <button class="btn-verde">🏠 Voltar ao Dashboard</button>
+                </a>
+                <a href="/exportar/csv">
+                    <button class="btn btn-warning" style="background: #F57C00; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
+                        📥 Exportar CSV
+                    </button>
+                </a>
+                <a href="/exportar/pdf">
+                    <button class="btn btn-danger" style="background: #D32F2F; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
+                        📄 Exportar PDF
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

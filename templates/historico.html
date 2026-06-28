@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card-dashboard">
+    <h2>📋 Histórico Completo</h2>
+    <p>Total de movimentações: <strong>{{ movimentacoes|length }}</strong></p>
+
+    <form method="GET" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <label class="form-label">Filtrar por Tipo:</label>
+            <select name="tipo" class="form-select">
+                <option value="">Todos</option>
+                {% for t in tipos %}
+                <option value="{{ t }}" {% if filtro_tipo == t %}selected{% endif %}>
+                    {{ t }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Filtrar por Categoria:</label>
+            <select name="categoria" class="form-select">
+                <option value="">Todas</option>
+                {% for c in categorias %}
+                <option value="{{ c }}" {% if filtro_categoria == c %}selected{% endif %}>
+                    {{ c }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn-verde me-2">🔍 Filtrar</button>
+            <a href="/historico" class="btn btn-secondary">Limpar</a>
+        </div>
+    </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Categoria</th>
+                <th>Sexo</th>
+                <th>Quantidade</th>
+                <th>Data</th>
+                <th>Usuário</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in movimentacoes %}
+            <tr>
+                <td>
+                    {% if m[0] == "Compra" %}🟢
+                    {% elif m[0] == "Venda" %}🔴
+                    {% elif m[0] == "Nascimento" %}🐣
+                    {% elif m[0] == "Morte" %}💀
+                    {% elif m[0] == "Abate" %}🔪
+                    {% endif %}
+                    {{ m[0] }}
+                </td>
+                <td>{{ m[1] }}</td>
+                <td>
+                    {% if m[2] == "Macho" %}♂️
+                    {% elif m[2] == "Fêmea" %}♀️
+                    {% else %}-
+                    {% endif %}
+                    {{ m[2] }}
+                </td>
+                <td><strong>{{ m[3] }}</strong></td>
+                <td>{{ m[4] }}</td>
+                <td>{{ m[5] if m[5] else '-' }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center">Nenhuma movimentação encontrada</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="/">
+            <button class="btn-verde">🏠 Voltar ao Dashboard</button>
+        </a>
+        <a href="/movimentacao">
+            <button class="btn btn-success">➕ Nova Movimentação</button>
+        </a>
+        <a href="/exportar/csv{% if filtro_tipo %}?tipo={{ filtro_tipo }}{% endif %}{% if filtro_categoria %}&categoria={{ filtro_categoria }}{% endif %}">
+            <button class="btn btn-warning" style="background: #F57C00; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
+                📥 Exportar CSV
+            </button>
+        </a>
+        <a href="/exportar/pdf{% if filtro_tipo %}?tipo={{ filtro_tipo }}{% endif %}{% if filtro_categoria %}&categoria={{ filtro_categoria }}{% endif %}">
+            <button class="btn btn-danger" style="background: #D32F2F; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
+                📄 Exportar PDF
+            </button>
+        </a>
+    </div>
+</div>
+
+{% endblock %}

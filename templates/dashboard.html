@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card-dashboard" style="background: {% if online %}#2E7D32{% else %}#F57C00{% endif %}; color: white; padding: 10px 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span>
+                    {% if online %}
+                        ✅ Conectado - Dados sincronizados
+                    {% else %}
+                        📡 Modo Offline - Dados salvos localmente
+                    {% endif %}
+                </span>
+                {% if not online %}
+                    <a href="/sincronizar" style="color: white; text-decoration: underline;">🔄 Sincronizar agora</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card-dashboard card-total">
+            <h4>Total do Rebanho</h4>
+            <h1>{{ total }}</h1>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-dashboard" style="background: #1976D2; color: white;">
+            <h4>♀️ Fêmeas</h4>
+            <h1>{{ total_femeas }}</h1>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-dashboard" style="background: #F57C00; color: white;">
+            <h4>♂️ Machos</h4>
+            <h1>{{ total_machos }}</h1>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card-dashboard">
+            <h3>🐄 Fêmeas</h3>
+            {% for c in categorias %}
+                {% if c[0] == "Matrizes" or c[0] == "Novilhas" or c[0] == "Bezerras" %}
+                <div class="categoria">
+                    <span>{{ c[0] }}</span>
+                    <strong>{{ c[1] }}</strong>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-dashboard">
+            <h3>🐂 Machos</h3>
+            {% for c in categorias %}
+                {% if c[0] == "Touros" or c[0] == "Garrotes" or c[0] == "Bezerros" %}
+                <div class="categoria">
+                    <span>{{ c[0] }}</span>
+                    <strong>{{ c[1] }}</strong>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card-dashboard">
+            <h3>📋 Últimas movimentações</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Categoria</th>
+                        <th>Qtd</th>
+                        <th>Data</th>
+                        <th>Usuário</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for m in ultimas %}
+                    <tr>
+                        <td>
+                            {% if m[0] == "Compra" %}🟢
+                            {% elif m[0] == "Venda" %}🔴
+                            {% elif m[0] == "Nascimento" %}🐣
+                            {% elif m[0] == "Morte" %}💀
+                            {% elif m[0] == "Abate" %}🔪
+                            {% endif %}
+                            {{ m[0] }}
+                        </td>
+                        <td>{{ m[1] }}</td>
+                        <td><strong>{{ m[2] }}</strong></td>
+                        <td>{{ m[3] }}</td>
+                        <td>{{ m[4] if m[4] else '-' }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">Nenhuma movimentação registrada</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="/movimentacao">
+                    <button class="btn-verde">➕ Nova Movimentação</button>
+                </a>
+                <a href="/historico">
+                    <button class="btn btn-secondary">📋 Ver Histórico Completo</button>
+                </a>
+                {% if not online %}
+                <a href="/sincronizar">
+                    <button class="btn btn-warning" style="background: #F57C00; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
+                        🔄 Sincronizar
+                    </button>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

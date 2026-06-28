@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card-dashboard">
+    <h2>📈 Gráficos do Rebanho</h2>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Distribuição por Categoria</h4>
+            <canvas id="categoriasChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <h4>Movimentações por Tipo</h4>
+            <canvas id="movimentacoesChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Dados das categorias
+    const categorias = {{ categorias|tojson }};
+    const labels = categorias.map(c => c[0]);
+    const data = categorias.map(c => c[1]);
+    
+    // Gráfico de Categorias
+    new Chart(document.getElementById('categoriasChart'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Quantidade de Animais',
+                data: data,
+                backgroundColor: ['#2E7D32', '#388E3C', '#43A047', '#1565C0', '#1976D2', '#1E88E5'],
+                borderColor: '#1B5E20',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    stepSize: 1
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

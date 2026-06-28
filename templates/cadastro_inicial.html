@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card-dashboard">
+    <h2>📥 Cadastro Inicial do Rebanho</h2>
+    <p>Defina a quantidade inicial para cada categoria:</p>
+
+    <form method="POST">
+        {% for categoria, quantidade in dados %}
+        <div class="mb-3">
+            <label class="form-label">
+                <strong>{{ categoria }}</strong>
+            </label>
+            <input
+                class="form-control"
+                type="number"
+                name="{{ categoria }}"
+                value="{{ quantidade }}"
+                min="0"
+                required>
+        </div>
+        {% endfor %}
+
+        <button class="btn-verde">💾 Salvar Cadastro Inicial</button>
+        <a href="/" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+
+{% endblock %}

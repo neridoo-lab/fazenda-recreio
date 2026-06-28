@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fazenda Recreio - Sistema de Rebanho</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="d-flex">
+    <aside class="sidebar">
+        <h3>🏡 Fazenda Recreio</h3>
+        <small>Sistema de Gerenciamento de Rebanho</small>
+        <hr>
+        <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+            <small style="color: #c8e6c9;">👤 {{ session.get('nome', 'Usuário') }}</small><br>
+            <small style="color: #a5d6a7;">
+                {% if session.get('tipo') == 'admin' %}
+                    ⭐ Administrador
+                {% else %}
+                    👤 Funcionário
+                {% endif %}
+            </small>
+        </div>
+        <a href="/">🏠 Dashboard</a>
+        {% if session.get('tipo') == 'admin' %}
+            <a href="/cadastro_inicial">📥 Cadastro Inicial</a>
+        {% endif %}
+        <a href="/movimentacao">➕ Movimentação</a>
+        <a href="/historico">📋 Histórico</a>
+        <a href="/relatorios">📊 Relatórios</a>
+        {% if session.get('tipo') == 'admin' %}
+            <a href="/admin/usuarios" style="background: #D32F2F;">👥 Gerenciar Usuários</a>
+        {% endif %}
+        <hr>
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+            <a href="/exportar/csv" style="background: #F57C00;">📥 Exportar CSV</a>
+            <a href="/exportar/pdf" style="background: #D32F2F;">📄 Exportar PDF</a>
+        </div>
+        <hr>
+        <a href="/logout" style="background: #C62828; margin-top: 10px;">🚪 Sair</a>
+        <hr>
+        <small style="color: #c8e6c9;">Versão 2.0</small>
+    </aside>
+    <main class="conteudo">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

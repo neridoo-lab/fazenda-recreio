@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card-dashboard">
+            <h2>👥 Gerenciar Usuários</h2>
+            <p>Gerencie os usuários do sistema</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card-dashboard">
+            <h4>➕ Adicionar Usuário</h4>
+            <form method="POST" action="/admin/usuario/add">
+                <div class="mb-3">
+                    <label class="form-label">Nome completo</label>
+                    <input type="text" name="nome" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Usuário (login)</label>
+                    <input type="text" name="usuario" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Senha (mínimo 6 caracteres)</label>
+                    <input type="password" name="senha" class="form-control" required minlength="6">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tipo</label>
+                    <select name="tipo" class="form-select">
+                        <option value="funcionario">Funcionário</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-verde" style="width:100%">✅ Adicionar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card-dashboard">
+            <h4>📋 Lista de Usuários</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Usuário</th>
+                        <th>Tipo</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in usuarios %}
+                    <tr>
+                        <td>{{ u[0] }}</td>
+                        <td>{{ u[1] }}</td>
+                        <td>{{ u[2] }}</td>
+                        <td>
+                            {% if u[3] == 'admin' %}
+                                <span class="badge" style="background: #D32F2F;">Admin</span>
+                            {% else %}
+                                <span class="badge" style="background: #2E7D32;">Funcionário</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if u[4] == 1 %}
+                                <span style="color: green;">✅ Ativo</span>
+                            {% else %}
+                                <span style="color: red;">❌ Inativo</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if u[3] != 'admin' %}
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-sm btn-warning" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modalSenha{{ u[0] }}">
+                                    🔑 Alterar Senha
+                                </button>
+                                <a href="/admin/usuario/delete/{{ u[0] }}" 
+                                   class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Tem certeza que deseja remover este usuário?')">
+                                    🗑️ Remover
+                                </a>
+                            </div>
+
+                            <div class="modal fade" id="modalSenha{{ u[0] }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form method="POST" action="/admin/usuario/alterar_senha">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Alterar Senha - {{ u[1] }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" name="id_usuario" value="{{ u[0] }}">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Nova Senha (mínimo 6 caracteres)</label>
+                                                    <input type="password" name="nova_senha" class="form-control" required minlength="6">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn-verde">Salvar</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                                <span style="color: #888; font-size: 12px;">Administrador principal</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card-dashboard">
+            <h4>📊 Logs de Acesso (últimos 50)</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Usuário</th>
+                        <th>Ação</th>
+                        <th>IP</th>
+                        <th>Data/Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td>{{ log[0] }}</td>
+                        <td>{{ log[1] }}</td>
+                        <td>{{ log[2] }}</td>
+                        <td>{{ log[3] }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center">Nenhum log registrado</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
