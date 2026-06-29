@@ -1,12 +1,12 @@
 // ============================================
 // SERVICE WORKER - FAZENDA RECREIO
-// Funciona offline e sincroniza depois
 // ============================================
 
-const CACHE_NAME = 'fazenda-recreio-v1';
+const CACHE_NAME = 'fazenda-recreio-v2';
 const urlsParaCache = [
     '/',
     '/login',
+    '/dashboard',
     '/static/css/style.css',
     '/static/images/logo.png',
     '/static/images/logo-192.png',
@@ -14,7 +14,7 @@ const urlsParaCache = [
 ];
 
 // ============================================
-// 1. INSTALAÇÃO - Guarda os arquivos em cache
+// 1. INSTALAÇÃO
 // ============================================
 self.addEventListener('install', function(event) {
     event.waitUntil(
@@ -24,11 +24,11 @@ self.addEventListener('install', function(event) {
                 return cache.addAll(urlsParaCache);
             })
     );
-    self.skipWaiting(); // Ativa o novo service worker imediatamente
+    self.skipWaiting();
 });
 
 // ============================================
-// 2. ATIVAÇÃO - Limpa caches antigos
+// 2. ATIVAÇÃO
 // ============================================
 self.addEventListener('activate', function(event) {
     event.waitUntil(
@@ -47,17 +47,18 @@ self.addEventListener('activate', function(event) {
 });
 
 // ============================================
-// 3. INTERCEPTAÇÃO - Responde com cache ou rede
+// 3. INTERCEPTAÇÃO - PRIORIDADE: CACHE, DEPOIS REDE
 // ============================================
 self.addEventListener('fetch', function(event) {
     event.respondWith(
         caches.match(event.request)
             .then(function(response) {
-                // Se encontrou no cache, retorna
+                // Se encontrou no cache, retorna (OFFLINE)
                 if (response) {
+                    console.log('📦 Servindo do cache:', event.request.url);
                     return response;
                 }
-                // Se não, tenta buscar na rede
+                // Se não, busca na rede
                 return fetch(event.request)
                     .then(function(response) {
                         // Guarda a resposta em cache para próxima vez
@@ -69,15 +70,19 @@ self.addEventListener('fetch', function(event) {
                         return response;
                     })
                     .catch(function() {
-                        // Se offline e não está em cache, tenta retornar a página de login
-                        return caches.match('/login');
+                        // Se offline e não está em cache, mostra página offline
+                        console.log('❌ Offline e não está em cache:', event.request.url);
+                        return new Response('Você está offline. Conecte-se à internet para acessar.', {
+                            status: 503,
+                            statusText: 'Offline'
+                        });
                     });
             })
     );
 });
 
 // ============================================
-// 4. SINCRONIZAÇÃO - Quando voltar à internet
+// 4. SINCRONIZAÇÃO
 // ============================================
 self.addEventListener('sync', function(event) {
     if (event.tag === 'sync-dados') {
@@ -85,13 +90,9 @@ self.addEventListener('sync', function(event) {
     }
 });
 
-// Função para sincronizar com o servidor
 async function sincronizarDados() {
     console.log('🔄 Sincronizando dados...');
-    
     try {
-        // Busca os dados salvos localmente (IndexedDB/localStorage)
-        // e envia para o servidor
         const response = await fetch('/sincronizar');
         const resultado = await response.json();
         console.log('✅ Dados sincronizados:', resultado);
@@ -99,12 +100,3 @@ async function sincronizarDados() {
         console.log('❌ Erro ao sincronizar:', error);
     }
 }
-
-// ============================================
-// 5. NOTIFICAÇÃO DE MENSAGENS (opcional)
-// ============================================
-self.addEventListener('message', function(event) {
-    if (event.data === 'syncNow') {
-        event.waitUntil(sincronizarDados());
-    }
-});
