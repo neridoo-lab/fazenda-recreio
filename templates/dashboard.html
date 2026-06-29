@@ -6,7 +6,8 @@
 <div class="dashboard-container">
     <nav class="navbar">
         <div class="nav-brand">
-            <span>🌿 Fazenda Recreio</span>
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Fazenda Recreio" class="logo-img">
+            <span class="logo-text">Fazenda Recreio</span>
         </div>
         <div class="nav-links">
             <a href="{{ url_for('dashboard') }}" class="active"><i class="fas fa-home"></i> Início</a>
@@ -101,9 +102,23 @@
     }
 
     .nav-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 0;
+    }
+
+    .logo-img {
+        height: 40px;
+        width: auto;
+        border-radius: 8px;
+    }
+
+    .logo-text {
         font-size: 20px;
         font-weight: 700;
-        padding: 15px 0;
+        color: white;
+        letter-spacing: 1px;
     }
 
     .nav-links {
@@ -311,6 +326,14 @@
         .welcome-section h1 {
             font-size: 22px;
         }
+
+        .logo-img {
+            height: 30px;
+        }
+
+        .logo-text {
+            font-size: 16px;
+        }
     }
 
     @media (max-width: 480px) {
@@ -324,7 +347,15 @@
         }
 
         .nav-brand {
-            font-size: 16px;
+            gap: 6px;
+        }
+
+        .logo-img {
+            height: 25px;
+        }
+
+        .logo-text {
+            font-size: 14px;
         }
 
         .nav-links a {
