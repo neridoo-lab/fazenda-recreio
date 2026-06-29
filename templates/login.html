@@ -6,7 +6,8 @@
 <div class="login-container">
     <div class="login-card">
         <div class="login-header">
-            <h1>🌿 Fazenda Recreio</h1>
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Fazenda Recreio" class="login-logo">
+            <h1>Fazenda Recreio</h1>
             <p>Faça login para acessar o sistema</p>
         </div>
 
@@ -50,7 +51,7 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        background: linear-gradient(135deg, #2c3e50, #3498db);
+        background: linear-gradient(135deg, #2c3e50, #27ae60);
         padding: 20px;
         margin: -20px;
     }
@@ -72,7 +73,14 @@
 
     .login-header {
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
+    }
+
+    .login-logo {
+        max-height: 80px;
+        width: auto;
+        margin-bottom: 10px;
+        border-radius: 12px;
     }
 
     .login-header h1 {
@@ -100,7 +108,7 @@
 
     .form-group label i {
         margin-right: 8px;
-        color: #3498db;
+        color: #27ae60;
     }
 
     .form-group input {
@@ -114,14 +122,14 @@
     }
 
     .form-group input:focus {
-        border-color: #3498db;
+        border-color: #27ae60;
         outline: none;
     }
 
     .btn-primary {
         width: 100%;
         padding: 14px;
-        background: linear-gradient(135deg, #2c3e50, #3498db);
+        background: linear-gradient(135deg, #2c3e50, #27ae60);
         color: white;
         border: none;
         border-radius: 8px;
@@ -133,7 +141,7 @@
 
     .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+        box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
     }
 
     .btn-primary i {
@@ -170,13 +178,8 @@
         .login-header h1 {
             font-size: 22px;
         }
-        .form-group input {
-            font-size: 16px;
-            padding: 10px 14px;
-        }
-        .btn-primary {
-            font-size: 16px;
-            padding: 12px;
+        .login-logo {
+            max-height: 60px;
         }
     }
 </style>
