@@ -36,10 +36,6 @@
                 <i class="fas fa-sign-in-alt"></i> Entrar
             </button>
         </form>
-
-        <div class="login-footer">
-            <p>Credenciais padrão: <strong>admin</strong> / <strong>admin123</strong></p>
-        </div>
     </div>
 </div>
 {% endblock %}
@@ -81,6 +77,9 @@
         width: auto;
         margin-bottom: 10px;
         border-radius: 12px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .login-header h1 {
@@ -156,19 +155,6 @@
         margin-bottom: 20px;
         text-align: center;
         font-weight: 500;
-    }
-
-    .login-footer {
-        margin-top: 25px;
-        text-align: center;
-        font-size: 13px;
-        color: #95a5a6;
-        border-top: 1px solid #ecf0f1;
-        padding-top: 20px;
-    }
-
-    .login-footer strong {
-        color: #2c3e50;
     }
 
     @media (max-width: 480px) {
