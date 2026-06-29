@@ -162,6 +162,11 @@
     </div>
 </div>
 
+<!-- BOTÃO VOLTAR -->
+<div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin: 20px 0 10px 0;">
+    <a href="/" class="btn-voltar">🏠 Voltar ao Dashboard</a>
+</div>
+
 {% endblock %}
 
 {% block extra_css %}
@@ -463,6 +468,30 @@
         background: #f8f9fa;
     }
 
+    /* BOTÃO VOLTAR */
+    .btn-voltar {
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #2c3e50, #3498db);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 16px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-block;
+        text-align: center;
+        min-width: 200px;
+    }
+
+    .btn-voltar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
     /* RESPONSIVIDADE */
     @media (max-width: 768px) {
         .row-duas-colunas {
@@ -508,6 +537,13 @@
             font-size: 13px;
             padding: 8px 16px;
         }
+
+        .btn-voltar {
+            min-width: unset;
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 14px;
+        }
     }
 
     @media (max-width: 480px) {
@@ -535,6 +571,11 @@
 
         .card-box {
             padding: 15px;
+        }
+
+        .btn-voltar {
+            font-size: 13px;
+            padding: 10px 16px;
         }
     }
 </style>
