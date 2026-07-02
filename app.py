@@ -553,7 +553,10 @@ def exportar_pdf():
         download_name=f'relatorio_rebanho_{datetime.now().strftime("%Y%m%d_%H%M")}.pdf'
     )
 
-
+@app.route('/ping')
+def ping():
+    return "OK", 200
+    
 if __name__ == "__main__":
     import socket
     def get_ip():
